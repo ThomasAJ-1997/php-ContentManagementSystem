@@ -1,11 +1,11 @@
 <?php 
 
 require 'classes/Connect.php';
+require 'classes/Users.php';
+require 'classes/Authenticate.php';
 require 'includes/config.php';
 
-$db = new Connect();
-$conn = $db->dbConnect();
-
+$secure = new Authenticate();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -15,19 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    $sql = "SELECT * FROM users WHERE email = :email" . " AND password = :password" . " AND active = 1";
-
-    $hashed_password = SHA1($password);
-    
-    $stmt = $conn->prepare($sql);
-    
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-    
-    $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
-    
-    $stmt->execute();
-    
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $users = new Users($conn, $email, $password);
+    $user = $users->login($conn, $email, $password);
 
    if (!$user) {
     echo 'Prepared statement failed to return a user. Please check your email and password.';
@@ -37,11 +26,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['username'] = $user['username'];
 
     // Give feedback to the user
+      
+        $secure->set_message('<br>'.'You are now logged in. Welcome ' . $_SESSION['username'] . '!');
+
+
         header('location: /cmsPHP/php-ContentManagementSystem/dashboard.php');
         die();
    }
-   
-   $stmt->closeCursor();
+
+  
 
 } 
 
@@ -52,8 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php require 'includes/header.php'; ?>
 
 <?php require 'includes/navigation.php'; ?>
-
-<?php var_dump($_POST); ?>
 
 <div class="container mt-5">
     <div class="row justify-content-center">

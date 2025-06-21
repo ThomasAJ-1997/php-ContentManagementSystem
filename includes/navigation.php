@@ -1,4 +1,6 @@
+<?php
 
+?>
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <!-- Container wrapper -->
@@ -29,14 +31,11 @@
       </a>
       <!-- Left links -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href="/cmsPHP/php-ContentManagementSystem/">Home</a>
+         <li class="nav-item">
+          <a class="nav-link" href="dashboard.php">Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Logout</a>
+          <a class="nav-link" href="logout.php">Logout</a>
         </li>
       </ul>
       <!-- Left links -->
@@ -112,3 +111,4 @@
   <!-- Container wrapper -->
 </nav>
 <!-- Navbar -->
+<?php $secure->get_message(); ?>
